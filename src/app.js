@@ -12,4 +12,8 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/loans', loanRoutes);
 
+app.get('/', (req, res) => {
+  res.send("🚀 PrestaYa API funcionando");
+});
+
 module.exports = app;
