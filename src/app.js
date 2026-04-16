@@ -16,4 +16,8 @@ app.get('/', (req, res) => {
   res.send("🚀 PrestaYa API funcionando");
 });
 
+const kycRoutes = require('./routes/kyc.routes');
+
+app.use('/api/kyc', kycRoutes);
+
 module.exports = app;

@@ -1,7 +1,15 @@
-const express = require("express");
-const db = require("../config/db");
-
+const express = require('express');
 const router = express.Router();
+
+const { createLoan, getLoans } = require('../controllers/loan.controller');
+const auth = require('../middlewares/auth.middleware');
+
+router.get('/contract/:loanId', auth, getContract);
+router.post('/pay/:loanId', auth, payLoan);
+router.get('/:userId', auth, getLoans);
+router.post('/', auth, createLoan);
+
+module.exports = router;
 
 function calc(amount, days) {
   let rate = 0;
@@ -17,20 +25,6 @@ function calc(amount, days) {
 
   return { interest, total, due };
 }
-
-router.post("/", async (req, res) => {
-  const { user_id, amount, days } = req.body;
-
-  const c = calc(amount, days);
-
-  const result = await db.query(
-    `INSERT INTO loans(user_id,amount,days,interest,total,status,due_date)
-     VALUES($1,$2,$3,$4,$5,'pending',$6) RETURNING *`,
-    [user_id, amount, days, c.interest, c.total, c.due]
-  );
-
-  res.json(result.rows[0]);
-});
 
 router.get("/:user_id", async (req, res) => {
   const result = await db.query(
